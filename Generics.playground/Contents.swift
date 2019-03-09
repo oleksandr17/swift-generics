@@ -62,3 +62,58 @@ func findIndex<T: Equatable>(of valueToFind: T, in array:[T]) -> Int? {
 
 let doubleIndex = findIndex(of: 9.3, in: [3.14159, 0.1, 0.25])
 let stringIndex = findIndex(of: "Andrea", in: ["Mike", "Malcolm", "Andrea"])
+
+//
+// Associated Types
+
+protocol Container {
+    associatedtype Item
+    mutating func append(_ item: Item)
+    var count: Int { get }
+    subscript(i: Int) -> Item { get }
+}
+
+struct IntStack {
+    private var items = [Int]()
+    private mutating func push(_ item: Int) {
+        items.append(item)
+    }
+    private mutating func pop() -> Int {
+        return items.removeLast()
+    }
+}
+
+extension IntStack: Container {
+    typealias Item = Int
+    mutating func append(_ item: Item) {
+        self.push(item)
+    }
+    var count: Int {
+        return items.count
+    }
+    subscript(i: Int) -> Item {
+        return items[i]
+    }
+}
+
+var stackOfInts = IntStack()
+stackOfInts.append(1)
+stackOfInts.append(2)
+stackOfInts.append(3)
+print(stackOfInts.count)
+
+//
+extension Stack: Container {
+    typealias Item = Element
+    mutating func append(_ item: Element) {
+        self.push(item)
+    }
+    var count: Int {
+        return items.count
+    }
+    subscript(i: Int) -> Element {
+        return items[i]
+    }
+}
+
+print(stackOfStrings.count)
