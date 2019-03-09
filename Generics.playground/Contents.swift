@@ -36,3 +36,14 @@ stackOfStrings.push("dos")
 stackOfStrings.push("tres")
 stackOfStrings.push("cuatro")
 let fromTheTop = stackOfStrings.pop()
+
+//
+// Extending a Generic Type
+
+extension Stack {
+    var topItem: Element? {
+        return items.last
+    }
+}
+
+print(String(describing: stackOfStrings.topItem))
