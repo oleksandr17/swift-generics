@@ -123,6 +123,9 @@ extension Stack: Container {
 
 print(stackOfStrings.count)
 
+// Extending an Existing Type to Specify an Associated Type
+extension Array: Container {}
+
 // Adding Constraints to an Associated Type
 protocol EqualityCheckable {
     associatedtype Item: Equatable
@@ -157,3 +160,86 @@ extension Stack: SuffixableContainer {
 let stackSuffix = stackOfStrings.suffix(2)
 print(stackOfStrings)
 print(stackSuffix)
+
+/*
+ Generic Where Clauses
+ */
+
+func allItemsMatch<C1: Container, C2: Container>
+    (_ someContainer: C1, _ anotherContainer: C2) -> Bool
+    where C1.Item == C2.Item, C1.Item: Equatable {
+        
+        // Check that both containers contain the same number of items.
+        if someContainer.count != anotherContainer.count {
+            return false
+        }
+        
+        // Check each pair of items to see if they're equivalent.
+        for i in 0..<someContainer.count {
+            if someContainer[i] != anotherContainer[i] {
+                return false
+            }
+        }
+        
+        // All items match, so return true.
+        return true
+}
+
+var arrayOfStrings = ["uno", "dos", "tres"]
+
+if allItemsMatch(stackOfStrings, arrayOfStrings) {
+    print("All items match.")
+} else {
+    print("Not all items match.")
+}
+
+// Extensions with a Generic Where Clause
+extension Stack where Element: Equatable {
+    func isTop(_ item: Element) -> Bool {
+        guard let topItem = items.last else {
+            return false
+        }
+        return topItem == item
+    }
+}
+
+if stackOfStrings.isTop("tres") {
+    print("Top element is tres.")
+} else {
+    print("Top element is something else.")
+}
+
+//
+extension Container where Item: Equatable {
+    func startsWith(_ item: Item) -> Bool {
+        return count >= 1 && self[0] == item
+    }
+}
+
+if [9, 9, 9].startsWith(42) {
+    print("Starts with 42.")
+} else {
+    print("Starts with something else.")
+}
+
+//
+extension Container where Item == Double {
+    func average() -> Double {
+        var sum = 0.0
+        for index in 0..<count {
+            sum += self[index]
+        }
+        return sum / Double(count)
+    }
+}
+print([1260.0, 1200.0, 98.6, 37.0].average())
+
+// Associated Types with a Generic Where Clause
+protocol List {
+    associatedtype Item
+    func add(item: Item)
+    func remove(item: Item)
+    
+    associatedtype Iterator: IteratorProtocol where Iterator.Element == Item
+    func makeIterator() -> Iterator
+}
